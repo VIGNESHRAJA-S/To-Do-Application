@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>College To-Do App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📚 College To-Do App</h1>
+
+    <!-- Task Form -->
+    <form id="taskForm">
+      <input type="text" id="title" placeholder="Task Title" required>
+      <select id="course">
+        <option value="Math">Math</option>
+        <option value="Physics">Physics</option>
+        <option value="Computer Science">Computer Science</option>
+      </select>
+      <input type="date" id="dueDate" required>
+      <select id="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <button type="submit">Add Task</button>
+    </form>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select id="filterCourse">
+        <option value="All">All Courses</option>
+        <option value="Math">Math</option>
+        <option value="Physics">Physics</option>
+        <option value="Computer Science">Computer Science</option>
+      </select>
+      <select id="filterPriority">
+        <option value="All">All Priorities</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <button id="viewToday">Today</button>
+      <button id="viewWeek">This Week</button>
+      <button id="viewAll">All</button>
+    </div>
+
+    <!-- Task List -->
+    <ul id="taskList"></ul>
+
+    <!-- Import/Export -->
+    <div class="import-export">
+      <button id="exportBtn">Export JSON</button>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
