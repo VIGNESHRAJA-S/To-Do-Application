@@ -1,0 +1,135 @@
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+// Initial sample data
+if (tasks.length === 0) {
+  tasks = [
+    { title: "Assignment 1", course: "Math", dueDate: "2025-08-25", priority: "High", completed: false },
+    { title: "Lab Report", course: "Physics", dueDate: "2025-08-23", priority: "Medium", completed: false },
+    { title: "Project Proposal", course: "Computer Science", dueDate: "2025-08-28", priority: "Low", completed: false }
+  ];
+  saveTasks();
+}
+
+const taskForm = document.getElementById("taskForm");
+const taskList = document.getElementById("taskList");
+const filterCourse = document.getElementById("filterCourse");
+const filterPriority = document.getElementById("filterPriority");
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks(filter = "All") {
+  taskList.innerHTML = "";
+  let filtered = [...tasks];
+
+  // Apply filters
+  if (filterCourse.value !== "All")
+    filtered = filtered.filter(t => t.course === filterCourse.value);
+
+  if (filterPriority.value !== "All")
+    filtered = filtered.filter(t => t.priority === filterPriority.value);
+
+  if (filter === "Today") {
+    const today = new Date().toISOString().split("T")[0];
+    filtered = filtered.filter(t => t.dueDate === today);
+  } else if (filter === "Week") {
+    const today = new Date();
+    const weekAhead = new Date();
+    weekAhead.setDate(today.getDate() + 7);
+    filtered = filtered.filter(t => {
+      const d = new Date(t.dueDate);
+      return d >= today && d <= weekAhead;
+    });
+  }
+
+  filtered.forEach((task, index) => {
+    const li = document.createElement("li");
+    if (!task.completed && new Date(task.dueDate) < new Date()) {
+      li.classList.add("overdue");
+    }
+    li.innerHTML = `
+      <div class="task-info">
+        <strong>${task.title}</strong> [${task.course}] 
+        <small>Due: ${task.dueDate} | Priority: ${task.priority}</small>
+        ${task.completed ? "✅" : ""}
+      </div>
+      <div class="task-actions">
+        <button onclick="toggleComplete(${index})">✓</button>
+        <button onclick="editTask(${index})">✎</button>
+        <button onclick="deleteTask(${index})">🗑</button>
+      </div>
+    `;
+    taskList.appendChild(li);
+  });
+}
+
+taskForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const newTask = {
+    title: document.getElementById("title").value,
+    course: document.getElementById("course").value,
+    dueDate: document.getElementById("dueDate").value,
+    priority: document.getElementById("priority").value,
+    completed: false
+  };
+  tasks.push(newTask);
+  saveTasks();
+  renderTasks();
+  taskForm.reset();
+});
+
+function toggleComplete(index) {
+  tasks[index].completed = !tasks[index].completed;
+  saveTasks();
+  renderTasks();
+}
+
+function editTask(index) {
+  const t = tasks[index];
+  document.getElementById("title").value = t.title;
+  document.getElementById("course").value = t.course;
+  document.getElementById("dueDate").value = t.dueDate;
+  document.getElementById("priority").value = t.priority;
+  tasks.splice(index, 1); // remove old entry, will be replaced on submit
+  saveTasks();
+  renderTasks();
+}
+
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  saveTasks();
+  renderTasks();
+}
+
+// Filters
+filterCourse.addEventListener("change", () => renderTasks());
+filterPriority.addEventListener("change", () => renderTasks());
+document.getElementById("viewToday").addEventListener("click", () => renderTasks("Today"));
+document.getElementById("viewWeek").addEventListener("click", () => renderTasks("Week"));
+document.getElementById("viewAll").addEventListener("click", () => renderTasks("All"));
+
+// Import/Export
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tasks.json";
+  a.click();
+});
+
+document.getElementById("importFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = event => {
+    tasks = JSON.parse(event.target.result);
+    saveTasks();
+    renderTasks();
+  };
+  reader.readAsText(file);
+});
+
+// Initial render
+renderTasks();
