@@ -1,0 +1,81 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #dcd4d4;
+  margin: 0;
+  padding: 40px;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 10px rgba(200, 241, 16, 0.873);
+}
+
+h1 {
+  text-align: center;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+form input, form select, form button {
+  padding: 8px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  }
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #cdf4ca;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 6px solid rgb(5, 187, 5);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li.overdue {
+  border-left: 6px solid red;
+  background: #f3bda4;
+}
+
+.task-actions button {
+  margin-left: 5px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: #6e67e9;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+button:hover {
+  background: #bd0e9d;
+}
+
+.import-export {
+  margin-top: 20px;
+  text-align: center;
+}
